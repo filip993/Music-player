@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+
+    <style>
+        body {
+            background-color: silver;
+        }
+        ul {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+        li {
+
+            margin: auto;
+            width: 50%;
+        }
+        img {
+            width: 50%;
+        }
+
+    </style>
+</head>
+
+<body>
+<ul>
+    <li><a data-imepesme="track_1.mp3" class="playlist">
+        <img src="pictures/BATMAN.jpg" ></a><p class="pesma">Peaceful Days</p></li>
+    <li><a data-imepesme="track_2.mp3" class="playlist">
+        <img src="pictures/Arkham_Knigt.jpg" ></a><p class="pesma">Significance</p></li>
+    <li><a data-imepesme="track_3.mp3" class="playlist">
+        <img src="pictures/Batman%20vs%20Arkham%20Knight.jpg" ></a><p class="pesma">Hand is dealt</p></li>
+</ul>
+
+<audio id="player">
+    <source src="songs/track_1.mp3" type="audio/mpeg">
+    <source src="songs/track_2.mp3" type="audio/mpeg">
+    <source src="songs/track_3.mp3" type="audio/mpeg">
+</audio>
+
+<span> Now playing: </span> <span id="nowplaying"></span><br><br>
+<button id="control"><i class="fa fa-play" aria-hidden="true"></i></button>
+<span id="trenutno"></span> / <span id="ukupno"></span>
+
+</body>
+<script>
+    var player = document.getElementById("player");
+    var control = document.getElementById("control");
+    var playlist = document.getElementsByClassName("playlist");
+    var tv = document.getElementById("trenutno");
+    var uv = document.getElementById("ukupno");
+    document.getElementById("nowplaying").innerHTML = "Peaceful Days"; //prva pesma
+    var songs = ["Peaceful Days", "Significance", "Hand is dealt"];
+
+    for (var i = 0; i < playlist.length; i++) {
+        playlist[i].addEventListener("click", function() {
+            var source = this.getAttribute("data-imepesme");
+            if(player.canPlayType('audio/mpeg')) {
+                player.src = 'songs/' + source;
+            }
+            player.currentTime = 0;
+            player.play();
+            control.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+            if(player.src.match("track_1.mp3")){
+                document.getElementById("nowplaying").innerHTML = songs[0];
+            }
+            if(player.src.match("track_2.mp3")){
+                document.getElementById("nowplaying").innerHTML = songs[1];
+            }
+            if(player.src.match("track_3.mp3")){
+                document.getElementById("nowplaying").innerHTML = songs[2];
+            }
+        });
+    }
+    control.addEventListener("click", function() {
+        if (player.paused) {
+            player.play();
+            control.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+        } else {
+            player.pause();
+            control.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+        }
+    });
+
+    var idIntervala = setInterval(function() {
+        tv.innerHTML = readableDuration(player.currentTime);
+    }, 1000);
+
+    function readableDuration(seconds) {
+        sec = Math.floor(seconds);
+        min = Math.floor(sec / 60);
+        min = min >= 10 ? min : '0' + min;
+        sec = Math.floor(sec % 60);
+        sec = sec >= 10 ? sec : '0' + sec;
+        return min + ':' + sec;
+    }
+    player.addEventListener('loadedmetadata', function() {
+        uv.innerHTML = readableDuration(player.duration);
+    });
+
+    player.addEventListener('ended', function() {
+        control.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+    });
+</script>
+</html>
